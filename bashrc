@@ -1,0 +1,169 @@
+
+# ==============================================================================
+# INTERACTIVE?
+# ==============================================================================
+# Return if not interactive
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+
+# ==============================================================================
+# FISH
+# ==============================================================================
+#WHICH_FISH="$(which fish)"
+#if [[ "$-" =~ i && -x "${WHICH_FISH}" && "${SHELL}" != "${WHICH_FISH}" ]]; then
+#	# fish 3.1b1 (2020-01-26) or newer
+#	if (fish --print-debug-categories &>/dev/null); then
+#		exec env SHELL="${WHICH_FISH}" "${WHICH_FISH}" -i
+#	else
+#		exec env SHELL="${WHICH_FISH}" "${WHICH_FISH}" -i --debug-level 0
+#	fi
+#fi
+
+
+# ==============================================================================
+# ENVIRONMENT
+# ==============================================================================
+# Prepend directory to $PATH if the directory exists and isn't already included
+function prepend_path() {
+	local newpath="$1"
+	[[ -d "$newpath" ]] || return 1
+	[[ ":${PATH:=$newpath}:" =~ /.*:"$newpath":.*/ ]] && return
+	PATH="$newpath:$PATH"
+}
+prepend_path "$HOME/.cargo/bin"
+prepend_path "$HOME/.local/bin"
+prepend_path "$HOME/bin"
+
+if [[ -f "$HOME/.config/bash-local/bashrc" ]]; then
+	source "$HOME/.config/bash-local/bashrc"
+fi
+
+CDPATH=".:$HOME/.config/links"
+export EDITOR=vim
+
+# LS_COLORS
+if [[ -f "$HOME/.config/LS_COLORS" ]]; then
+	eval $(dircolors -b "$HOME/.config/LS_COLORS")
+fi
+
+
+# ==============================================================================
+# ALIASES
+# ==============================================================================
+alias bashrc='source ~/.bashrc'
+alias cdgit='cd "$(git rev-parse --show-toplevel)"'
+alias cdpwd='cd $(pwd)'
+alias cdtemp='cd "$(mktemp -d)"'
+alias fish='fish --debug-level 0'
+alias ll='LC_ALL=C ls -F -lrth --color=auto --group-directories-first'
+alias la='ll -a'
+alias pwd='pwd -P'
+alias which='type'
+alias unfunction='unset -f'
+
+if command -v nvim &>/dev/null; then
+	export EDITOR=nvim
+	alias vi='nvim'
+fi
+
+
+# ==============================================================================
+# FUNCTIONS
+# ==============================================================================
+# cd into anywhere/anything
+function cd() {
+	if [[ -z "$1" ]]; then
+		builtin cd
+	elif [[ "$1" == '-' ]]; then
+		builtin cd - &>/dev/null
+	elif [[ -d "$1" ]]; then
+		builtin cd -P "$1" &>/dev/null
+	elif [[ -f "$1" ]]; then
+		builtin cd -P "$(dirname "$1")"
+	elif (command which "$1" &>/dev/null); then
+		builtin cd -P "$(dirname "$(command which $1)")"
+	else
+		builtin cd -P "$@" || return $?
+	fi
+	# TODO: Remove duplicates
+	# https://unix.stackexchange.com/questions/288492/removing-duplicates-from-pushd-popd-paths
+	pushd -n "$(builtin pwd -P)" &>/dev/null
+	builtin pwd -P
+}
+
+# cdn function to cd using nnn
+[[ -f "$HOME/bin/sourceme/cdn.bash" ]] && source "$HOME/bin/sourceme/cdn.bash"
+
+# Use fzf to cd
+function cdf() {
+	local result dir
+	result="$(fzfd)" || return $?
+	dir="$(echo "$result" 2>/dev/null | sed "s|\$GIT_TOP|$(git-top)|")"
+	print-cmd cd "$result"
+	cd "$dir"
+}
+
+
+# ==============================================================================
+# KEY BINDINGS
+# ==============================================================================
+# List keys
+function bkeys() {
+	if [[ -n "$@" ]]; then
+		bind -P | grep "$@"
+	else
+		bind -P
+	fi
+}
+
+# Set vi readline
+bind -f "$HOME/.config/bash/inputrc"
+
+
+# ==============================================================================
+# PROMPT
+# ==============================================================================
+if command -v bash-prompt &>/dev/null; then
+	PROMPT_COMMAND='PS1="$(bash-prompt)"'
+	export start_ms
+	function preexec() {
+		RETVAL=$?
+		current_ms="$(date +'%s%3N')"
+		[[ -n "$COMP_LINE" ]] && return
+		if [[ "$BASH_COMMAND" == "$PROMPT_COMMAND" ]]; then
+			((start_ms)) || return
+			((RETVAL)) && echo -e "\e[31m(exited $RETVAL)\e[0m"
+			bash-prompt-time "$start_ms" "$current_ms"
+			unset start_ms
+			return
+		fi
+		printf "\x1b[38;5;8m[$(date +%T)] Started\e[0m\n"
+		start_ms="$(date +'%s%3N')"
+
+	}
+	trap 'preexec' DEBUG
+fi
+
+# command > preexec
+# prompt_cmd > preexec
+# draw drompt
+# command
+# redraw > preexec
+
+export TERM=alacritty
+
+# ==============================================================================
+# TEMPORARY
+# ==============================================================================
+# Dot key is broken
+alias cup='cd ..'
+alias cup2='cd ../..'
+alias cup3='cd ../../..'
+alias cup4='cd ../../../..'
+function cddot() {
+	cd ".$1"
+}
+
