@@ -159,7 +159,8 @@ fi
 # command
 # redraw > preexec
 
-export TERM=alacritty
+# TODO: Figure out a better way to set this
+#export TERM=alacritty
 
 # ==============================================================================
 # TEMPORARY
