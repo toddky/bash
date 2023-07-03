@@ -61,6 +61,7 @@ fi
 # ==============================================================================
 alias bashrc='source ~/.bashrc'
 alias cdgit='cd "$(git rev-parse --show-toplevel)"'
+alias cdl='cd $(stat -c "%Y %n" */ | sort -n | sed -n '"'"'$s/^[^ ]* //p'"'"')'
 alias cdpwd='cd $(pwd)'
 alias cdtemp='cd "$(mktemp -d)"'
 alias fish='fish --debug-level 0'
