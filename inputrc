@@ -24,3 +24,10 @@ set show-all-if-unmodified on
 #set colored-stats On
 #set visible-stats On
 
+# Prompt
+# https://gist.github.com/sebastiancarlos/b3668160d793d7cb3552cef57000755a
+# Insert mode prompt
+set vi-ins-mode-string "\1\e[30;44m\2 INS \1\e[0m\2 "
+# Normal mode prompt
+set vi-cmd-mode-string "\1\e[30;47m\2 NOR \1\e[0m\2 "
+
