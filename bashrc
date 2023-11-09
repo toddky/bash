@@ -17,6 +17,8 @@ stty erase ^?
 # Use physical path
 set -P
 
+#history -r <(ls-history)
+
 
 # ==============================================================================
 # FISH
