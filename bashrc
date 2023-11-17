@@ -65,6 +65,7 @@ fi
 # ALIASES
 # ==============================================================================
 alias bashrc='source ~/.bashrc'
+function cdcat { cd "$(cat "$1")"; }
 alias cdgit='cd "$(git rev-parse --show-toplevel)"'
 alias cdl='cd $(stat -c "%Y %n" */ | sort -n | sed -n '"'"'$s/^[^ ]* //p'"'"')'
 alias cdpwd='cd $(pwd)'
