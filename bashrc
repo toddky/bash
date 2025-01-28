@@ -124,6 +124,12 @@ function cdf() {
 	cd "$dir"
 }
 
+function cup() {
+	local result
+	result="$(path-tui)" || return
+	cd "$result"
+}
+
 
 # ==============================================================================
 # KEY BINDINGS
