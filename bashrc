@@ -17,7 +17,12 @@ stty erase ^?
 # Use physical path
 set -P
 
-#history -r <(ls-history)
+HISTCONTROL=ignoreboth
+mkdir -p "$HOME/.bash_histories"
+HISTFILE="$HOME/.bash_histories/$(date +%Y%m%d-%H%M%S).$(hostname -s).$$.txt"
+HISTTIMEFORMAT='%F %T '
+HISTSIZE=999999
+HISTFILESIZE=999999
 
 
 # ==============================================================================
