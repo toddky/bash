@@ -151,22 +151,33 @@ bind -f "$HOME/.config/bash/inputrc"
 # PROMPT
 # ==============================================================================
 if command -v bash-prompt &>/dev/null; then
+
+	# Set default prompt command
 	PROMPT_COMMAND='PS1="$(bash-prompt)"'
+
+	# Copy to /tmp for increased performance
+	bash_prompt="/tmp/$USER-bash-prompt"
+	(
+		new_bash_prompt="$(command -v bash-prompt)"
+		cmp --silent "$bash_prompt" "$new_bash_prompt" && return
+		umask 022
+		cp "$(command -v bash-prompt)" "$bash_prompt"
+	)
+	if chmod 755 "$bash_prompt"; then
+		PROMPT_COMMAND='PS1="$("$bash_prompt")"'
+	fi
+
 	export start_ms
 	function preexec() {
 		RETVAL=$?
-		current_ms="$(date +'%s%3N')"
 		[[ -n "$COMP_LINE" ]] && return
 		if [[ "$BASH_COMMAND" == "$PROMPT_COMMAND" ]]; then
 			((start_ms)) || return
 			((RETVAL)) && echo -e "\e[31m(exited $RETVAL)\e[0m"
-			bash-prompt-time "$start_ms" "$current_ms"
-			unset start_ms
 			return
 		fi
 		printf "\x1b[38;5;8m[$(date +%T)] Started\e[0m\n"
 		start_ms="$(date +'%s%3N')"
-
 	}
 	trap 'preexec' DEBUG
 fi
