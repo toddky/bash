@@ -4,8 +4,8 @@
 # ==============================================================================
 # Return if not interactive
 case $- in
-    *i*) ;;
-      *) return;;
+	*i*) ;;
+	*) return;;
 esac
 
 
@@ -19,7 +19,8 @@ set -P
 
 HISTCONTROL=ignoreboth
 mkdir -p "$HOME/.bash_histories"
-HISTFILE="$HOME/.bash_histories/$(date +%Y%m%d-%H%M%S).$(hostname -s).$$.txt"
+HISTFILE="$HOME/.bash_histories/$(date +%Y%m%d-%H%M%S).$(hostname -s).txt"
+# Used as a format string for strftime(3) to print the time stamp associated with each entry.
 HISTTIMEFORMAT='%F %T '
 HISTSIZE=999999
 HISTFILESIZE=999999
