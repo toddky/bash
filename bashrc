@@ -50,6 +50,11 @@ function prepend_path() {
 	[[ ":${PATH:=$newpath}:" =~ /.*:"$newpath":.*/ ]] && return
 	PATH="$newpath:$PATH"
 }
+
+prepend_path "$HOME/.rbenv/bin"
+if command -v rbenv &>/dev/null; then
+	eval "$(rbenv init -)"
+fi
 prepend_path "$HOME/.cargo/bin"
 prepend_path "$HOME/.local/bin"
 prepend_path "$HOME/bin"
