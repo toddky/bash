@@ -199,6 +199,18 @@ fi
 # TODO: Figure out a better way to set this
 #export TERM=alacritty
 
+
+# ==============================================================================
+# GOLANG
+# ==============================================================================
+# cd "$HOME"
+# curl -L -O https://go.dev/dl/go1.23.5.linux-amd64.tar.gz
+# tar -xzf go1.23.5.linux-amd64.tar.gz
+export GOROOT=$HOME/go
+export GOPATH=$HOME/go/workspace
+export PATH=$PATH:$GOROOT/bin
+
+
 # ==============================================================================
 # TEMPORARY
 # ==============================================================================
