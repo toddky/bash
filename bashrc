@@ -206,9 +206,10 @@ fi
 # cd "$HOME"
 # curl -L -O https://go.dev/dl/go1.23.5.linux-amd64.tar.gz
 # tar -xzf go1.23.5.linux-amd64.tar.gz
-export GOROOT=$HOME/go
-export GOPATH=$HOME/go/workspace
-export PATH=$PATH:$GOROOT/bin
+export GOROOT="$HOME/go"
+export GOPATH="$GOROOT/workspace"
+export GOBIN="$GOROOT/bin"
+export PATH="$PATH:$GOBIN"
 
 
 # ==============================================================================
