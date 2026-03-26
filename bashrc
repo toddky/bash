@@ -18,6 +18,7 @@ stty erase ^?
 set -P
 
 HISTCONTROL=ignoreboth
+shopt -s histappend
 mkdir -p "$HOME/.bash_histories"
 HISTFILE="$HOME/.bash_histories/$(date +%Y%m%d-%H%M%S).$(hostname -s).txt"
 # Used as a format string for strftime(3) to print the time stamp associated with each entry.
@@ -161,7 +162,7 @@ bind -f "$HOME/.config/bash/inputrc"
 if command -v bash-prompt &>/dev/null; then
 
 	# Set default prompt command
-	PROMPT_COMMAND='PS1="$(bash-prompt)"'
+	PROMPT_COMMAND='history -a; PS1="$(bash-prompt)"'
 
 	# Copy to /tmp for increased performance
 	bash_prompt="/tmp/$USER-bash-prompt"
@@ -172,7 +173,7 @@ if command -v bash-prompt &>/dev/null; then
 		cp "$(command -v bash-prompt)" "$bash_prompt"
 	)
 	if chmod 755 "$bash_prompt"; then
-		PROMPT_COMMAND='PS1="$("$bash_prompt")"'
+		PROMPT_COMMAND='history -a; PS1="$("$bash_prompt")"'
 	fi
 
 	export start_ms
