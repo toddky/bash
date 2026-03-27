@@ -162,7 +162,11 @@ bind -f "$HOME/.config/bash/inputrc"
 if command -v bash-prompt &>/dev/null; then
 
 	# Set default prompt command
-	PROMPT_COMMAND='history -a; PS1="$(bash-prompt)"'
+	function my_prompt_command() {
+		history -a
+		PS1="$(bash-prompt)"
+	}
+	PROMPT_COMMAND='my_prompt_command'
 
 	# Copy to /tmp for increased performance
 	bash_prompt="/tmp/$USER-bash-prompt"
@@ -173,7 +177,10 @@ if command -v bash-prompt &>/dev/null; then
 		cp "$(command -v bash-prompt)" "$bash_prompt"
 	)
 	if chmod 755 "$bash_prompt"; then
-		PROMPT_COMMAND='history -a; PS1="$("$bash_prompt")"'
+		function my_prompt_command() {
+			history -a
+			PS1="$("$bash_prompt")"
+		}
 	fi
 
 	export start_ms
