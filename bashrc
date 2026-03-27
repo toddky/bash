@@ -187,15 +187,15 @@ if command -v bash-prompt &>/dev/null; then
 	function preexec() {
 		RETVAL=$?
 		[[ -n "$COMP_LINE" ]] && return
-		if [[ "$BASH_COMMAND" == "$PROMPT_COMMAND" ]]; then
+		if [[ "$BASH_COMMAND" == "my_prompt_command" ]]; then
 			((start_ms)) || return
 			((RETVAL)) && echo -e "\e[31m(exited $RETVAL)\e[0m"
 			return
 		fi
 		printf "\x1b[38;5;8m[$(date +%T)] Started\e[0m\n"
 		start_ms="$(date +'%s%3N')"
+		#unset start_ms  # uncomment to disable command timing
 	}
-	trap 'preexec' DEBUG
 fi
 
 # command > preexec
@@ -232,3 +232,8 @@ function cddot() {
 	cd ".$1"
 }
 
+
+# Must be last: enable DEBUG trap for command timing
+if declare -f preexec &>/dev/null; then
+	trap 'preexec' DEBUG
+fi
