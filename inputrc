@@ -6,11 +6,17 @@ set keymap vi-command
 H: beginning-of-line
 L: end-of-line
 
+"\C-a": beginning-of-line
+"\C-e": end-of-line
+
 set keymap vi-insert
 #"\C-j": next-history
 #"\C-k": previous-history
 "\C-j": history-search-forward
 "\C-k": history-search-backward
+
+"\C-a": beginning-of-line
+"\C-e": end-of-line
 
 # TODO: Figure out how to make this work
 # Change cursor shape for mode
