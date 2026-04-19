@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)"
 
-bashrc="$CURRENT_DIR/bashrc"
-inputrc="$CURRENT_DIR/inputrc"
+now=$(date +%Y%m%d-%H%M%S)
 
-ln -sfn "$bashrc" "$HOME/.bashrc"
-ln -sfn "$inputrc" "$HOME/.inputrc"
+function symlink() {
+	local src="$1"
+	local dest="$2"
+	if [[ "$(readlink -f "$dest")" == "$src" ]]; then
+		return
+	fi
+	if [[ -e "$dest" && ! -L "$dest" ]]; then
+		cp "$dest" "${dest}.backup.${now}"
+	fi
+	ln -sf "$src" "$dest"
+}
 
+symlink "$CURRENT_DIR/bashrc"  "$HOME/.bashrc"
+symlink "$CURRENT_DIR/inputrc" "$HOME/.inputrc"
