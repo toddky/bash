@@ -224,14 +224,13 @@ export PATH="$PATH:$GOBIN"
 # TEMPORARY
 # ==============================================================================
 # Dot key is broken
-alias cup='cd ..'
-alias cup2='cd ../..'
-alias cup3='cd ../../..'
-alias cup4='cd ../../../..'
-function cddot() {
-	cd ".$1"
-}
-
+#alias cup='cd ..'
+#alias cup2='cd ../..'
+#alias cup3='cd ../../..'
+#alias cup4='cd ../../../..'
+#function cddot() {
+#	cd ".$1"
+#}
 
 # Must be last: enable DEBUG trap for command timing
 if declare -f preexec &>/dev/null; then
