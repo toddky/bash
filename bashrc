@@ -66,6 +66,7 @@ fi
 
 CDPATH=".:$HOME/.config/links"
 export EDITOR=vim
+export COLORTERM=truecolor
 
 # LS_COLORS
 if [[ -f "$HOME/.config/LS_COLORS" ]]; then
