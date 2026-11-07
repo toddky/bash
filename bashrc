@@ -30,21 +30,14 @@ HISTFILESIZE=999999
 # ==============================================================================
 # ENVIRONMENT
 # ==============================================================================
-# Prepend directory to $PATH if the directory exists and isn't already included
-function prepend_path() {
-	local newpath="$1"
-	[[ -d "$newpath" ]] || return 1
-	[[ ":${PATH:=$newpath}:" =~ /.*:"$newpath":.*/ ]] && return
-	PATH="$newpath:$PATH"
-}
-
-prepend_path "$HOME/.rbenv/bin"
+# Missing dirs and duplicates are dropped by dedup_path at the end.
+PATH="$HOME/.rbenv/bin:$PATH"
 if command -v rbenv &>/dev/null; then
 	eval "$(rbenv init -)"
 fi
-prepend_path "$HOME/.cargo/bin"
-prepend_path "$HOME/.local/bin"
-prepend_path "$HOME/bin"
+PATH="$HOME/.cargo/bin:$PATH"
+PATH="$HOME/.local/bin:$PATH"
+PATH="$HOME/bin:$PATH"
 
 if [[ -f "$HOME/.config/bash-local/bashrc" ]]; then
 	source "$HOME/.config/bash-local/bashrc"
@@ -204,8 +197,8 @@ export PATH="$PATH:$GOBIN"
 # ==============================================================================
 # DEDUP PATH
 # ==============================================================================
-# Keeps the first copy of each dir so lookup order does not change.
-# Example: PATH=/a/bin:/b/bin:/a/bin:/c/bin -> PATH=/a/bin:/b/bin:/c/bin
+# Keeps the first copy of each dir that exists, so every lookup skips dead and repeated dirs.
+# Example: PATH=/a/bin:/missing:/b/bin:/a/bin -> PATH=/a/bin:/b/bin
 function dedup_path() {
 	local unique_dirs='' dir
 	local -a dirs
@@ -213,6 +206,7 @@ function dedup_path() {
 	for dir in "${dirs[@]}"; do
 		[[ -z "$dir" ]] && continue
 		[[ ":$unique_dirs:" == *":$dir:"* ]] && continue
+		[[ -d "$dir" ]] || continue
 		unique_dirs+="${unique_dirs:+:}$dir"
 	done
 	PATH="$unique_dirs"
