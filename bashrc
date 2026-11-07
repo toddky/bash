@@ -28,20 +28,6 @@ HISTFILESIZE=999999
 
 
 # ==============================================================================
-# FISH
-# ==============================================================================
-#WHICH_FISH="$(which fish)"
-#if [[ "$-" =~ i && -x "${WHICH_FISH}" && "${SHELL}" != "${WHICH_FISH}" ]]; then
-#	# fish 3.1b1 (2020-01-26) or newer
-#	if (fish --print-debug-categories &>/dev/null); then
-#		exec env SHELL="${WHICH_FISH}" "${WHICH_FISH}" -i
-#	else
-#		exec env SHELL="${WHICH_FISH}" "${WHICH_FISH}" -i --debug-level 0
-#	fi
-#fi
-
-
-# ==============================================================================
 # ENVIRONMENT
 # ==============================================================================
 # Prepend directory to $PATH if the directory exists and isn't already included
@@ -199,12 +185,6 @@ if command -v bash-prompt &>/dev/null; then
 	}
 fi
 
-# command > preexec
-# prompt_cmd > preexec
-# draw drompt
-# command
-# redraw > preexec
-
 # TODO: Figure out a better way to set this
 #export TERM=alacritty
 
@@ -222,18 +202,10 @@ export PATH="$PATH:$GOBIN"
 
 
 # ==============================================================================
-# TEMPORARY
+# PREEXEC
 # ==============================================================================
-# Dot key is broken
-#alias cup='cd ..'
-#alias cup2='cd ../..'
-#alias cup3='cd ../../..'
-#alias cup4='cd ../../../..'
-#function cddot() {
-#	cd ".$1"
-#}
-
 # Must be last: enable DEBUG trap for command timing
 if declare -f preexec &>/dev/null; then
 	trap 'preexec' DEBUG
 fi
+
