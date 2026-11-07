@@ -202,6 +202,25 @@ export PATH="$PATH:$GOBIN"
 
 
 # ==============================================================================
+# DEDUP PATH
+# ==============================================================================
+# Keeps the first copy of each dir so lookup order does not change.
+# Example: PATH=/a/bin:/b/bin:/a/bin:/c/bin -> PATH=/a/bin:/b/bin:/c/bin
+function dedup_path() {
+	local unique_dirs='' dir
+	local -a dirs
+	IFS=: read -r -a dirs <<<"$PATH"
+	for dir in "${dirs[@]}"; do
+		[[ -z "$dir" ]] && continue
+		[[ ":$unique_dirs:" == *":$dir:"* ]] && continue
+		unique_dirs+="${unique_dirs:+:}$dir"
+	done
+	PATH="$unique_dirs"
+}
+dedup_path
+
+
+# ==============================================================================
 # PREEXEC
 # ==============================================================================
 # Must be last: enable DEBUG trap for command timing
